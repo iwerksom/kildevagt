@@ -56,7 +56,7 @@ export default function GraphView({ title, entities, selected, onSelect, countFo
       )}
       {placed.map((p) => {
         const id = entityId(p.e);
-        const weak = p.e.mentions.every((m) => m.confidence < 0.9);
+        const weak = p.e.kind === "Unclassified";
         return (
           <line key={id} x1={CX} y1={CY} x2={p.x} y2={p.y}
             className={`edge ${weak ? "edge-weak" : ""} ${selected === id ? "edge-on" : ""}`}

@@ -5,11 +5,12 @@ import type { DocumentDetail, Entity } from "@/lib/data";
 import { toId } from "@/lib/id";
 import GraphView, { entityId } from "./GraphView";
 
-const KINDS: Entity["kind"][] = ["Company", "Organisation", "Person", "Place"];
+const KINDS: Entity["kind"][] = ["Company", "Organisation", "Person", "Unclassified", "Place"];
 const KIND_HELP: Record<Entity["kind"], string> = {
-  Company: "has a legal form (A/S, ApS ...)",
-  Organisation: "name guessed by spaCy, unverified",
+  Company: "a business: legal form (A/S, ApS ...), a known brand, or a business word",
+  Organisation: "not a business: association, foundation, waterworks, museum, public-owned company",
   Person: "elected official",
+  Unclassified: "spaCy found a name, but nothing says what kind of thing it is",
   Place: "place name, noisy",
 };
 const MAX_NODES = 24;
@@ -79,7 +80,7 @@ export default function Viewer({ doc }: { doc: DocumentDetail }) {
         </div>
         <GraphView title={doc.title} entities={shown} selected={selected} onSelect={setSelected} countFor={countFor} />
         <p className="muted small">
-          {shown.length} of {visible.length} entities shown{item ? ` for item ${item}` : ""}. Dashed lines are unverified guesses.
+          {shown.length} of {visible.length} entities shown{item ? ` for item ${item}` : ""}. Dashed lines are unclassified names: nothing says what they are.
           Boxes along the bottom are other documents that mention the same name.
         </p>
 

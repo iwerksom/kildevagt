@@ -37,7 +37,7 @@ button.link { background: none; border: 0; color: var(--accent); cursor: pointer
 .toggles { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 8px; }
 .toggle { display: inline-flex; gap: 6px; align-items: center; cursor: pointer; font-size: 14px; }
 .dot { width: 10px; height: 10px; border-radius: 50%; background: currentColor; display: inline-block; }
-.kind-Company { color: var(--company); } .kind-Organisation { color: var(--org); } .kind-Person { color: var(--person); } .kind-Place { color: var(--place); }
+.kind-Company { color: var(--company); } .kind-Organisation { color: var(--org); } .kind-Person { color: var(--person); } .kind-Place { color: var(--place); } .kind-Unclassified { color: var(--muted); }
 .graph { width: 100%; height: auto; border: 1px solid var(--line); border-radius: 8px; }
 .graph-bg { fill: var(--surface); }
 .edge { stroke: var(--muted); stroke-opacity: 0.5; } .edge-weak { stroke-dasharray: 5 4; } .edge-on { stroke: var(--accent); stroke-opacity: 1; } .edge-other { stroke-dasharray: 2 3; }

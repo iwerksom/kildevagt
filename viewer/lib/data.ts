@@ -11,7 +11,7 @@ export type Mention = {
 };
 
 export type Entity = {
-  key: string; kind: "Company" | "Organisation" | "Person" | "Place"; name: string;
+  key: string; kind: "Company" | "Organisation" | "Unclassified" | "Person" | "Place"; name: string;
   verified: boolean; mentions: Mention[]; alsoIn: { title: string; source: string; url: string }[];
 };
 
