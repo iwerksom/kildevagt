@@ -4,6 +4,7 @@ Two labelled sets, both made by reading names from the real graph:
   org_gold.csv        the first audit; the rules were written while looking at it (optimistic)
   org_gold_fresh.csv  names from meetings fetched afterwards. Rules were first measured on it, THEN
                       generalisable fixes were made, so it is also no longer fully untouched.
+clean_name (optional) = the name once technical municipal words are removed.
 expected = Company (a business), Organisation (not a business) or Other (anything else, including
 'cannot tell'). What matters is PRECISION: a wrong 'Company' is worse than a name left Unclassified.
 Recall is lower on purpose: a name with no word saying what it is stays Unclassified.
@@ -77,3 +78,13 @@ def test_a_match_across_a_sentence_boundary_keeps_only_the_company():
     result = classify("Hedensted Kommune. Sæsonens Madleverandør ApS")
     assert result.label == "Company" and result.name == "Sæsonens Madleverandør ApS"
     assert result.key == "sæsonens madleverandør"
+
+
+@pytest.mark.parametrize("name", list(SETS))
+def test_technical_words_are_removed_from_the_name(name):
+    """'Glud Museum Samarbejdsaftale' is the organisation 'Glud Museum' plus a document type."""
+    checked = [r for r in SETS[name] if r.get("clean_name")]
+    for r in checked:
+        assert classify(r["surface"]).name == r["clean_name"], r["surface"]
+    if name == "org_gold_fresh":
+        assert len(checked) >= 8

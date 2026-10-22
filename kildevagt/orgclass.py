@@ -48,9 +48,15 @@ PUBLIC_BODY = re.compile(
     re.IGNORECASE)
 DEPARTMENT = re.compile(r"^[A-ZÆØÅ][\wæøå-]+ & [A-ZÆØÅ][\wæøå-]+s?$")   # "Natur & Miljø", "Børn & Unge"
 
-# Words that sit next to a name in the page layout and are not part of it ("Sagsfremstilling Visit Aarhus").
-SECTION_WORDS = {"dagsorden", "sagsfremstilling", "beslutning", "indstilling", "resumé", "lovgrundlag", "bekendtgørelse",
-                 "samarbejdsaftale", "bilag", "beslutningstema", "baggrund"}
+# Technical municipal words that sit next to a name in the page layout and are not part of it
+# ("Sagsfremstilling Visit Aarhus", "Sønderby Vandværk Lovgrundlag Bekendtgørelse"): section headings
+# and document types. Removed from either end of a name. Extend this list when a new one shows up.
+SECTION_WORDS = {
+    "dagsorden", "sagsfremstilling", "beslutning", "indstilling", "resumé", "lovgrundlag", "retsgrundlag",
+    "bekendtgørelse", "samarbejdsaftale", "aftale", "bilag", "beslutningstema", "baggrund", "vedr", "vedrørende",
+    "notat", "referat", "vedtægter", "kontrakt", "lejekontrakt", "årsrapport", "regnskab", "høringssvar",
+    "lokalplan", "servitut", "tillæg", "sagsnr", "journalnummer", "skema", "evaluering", "orientering",
+}
 
 # Non-business cues: the LAST word of a multi-word name, in any common form (-en, -et, -s, -ets ...)
 ORG_CUE = re.compile(r"^(forening|fond|fonde|vandværk|vandværker|museum|museer|boligselskab|boligforening|"
