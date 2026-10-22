@@ -10,9 +10,9 @@ It is a prototype. This is what it does and does not do today.
 | Works | Does not work / not built |
 |---|---|
 | Two live sources: a plain-HTML one (YAML config only) and an AJAX one (small Python adapter), city councils | A third source (FirstAgenda) is **blocked on purpose** (see below). No third live source |
-| Polite fetching, archive with SHA-256, change detection, per-source health (green/yellow/red/blocked) | CVR lookup: every company is `verified=false` |
-| Entities (spaCy `da_core_news_lg` + legal-form rules) and a Neo4j graph with provenance on every edge | Local-model clean-up of entities, a web UI |
-| 25 offline tests on saved pages | Agenda annexes (bilag) are not fetched, only the main agenda PDF; no OCR |
+| Polite fetching, archive with SHA-256, change detection, per-source health (green/yellow/red/blocked) | CVR lookup: every company is `verified=false`. The classifier is rule-based: about 100% precision on its labelled names but only about 70 to 100% recall, see `tests/test_orgclass.py` |
+| Entities (spaCy `da_core_news_lg` plus evidence rules: a name is a Company, an Organisation or Unclassified) and a Neo4j graph with provenance on every edge | Local-model clean-up of entities |
+| 26 offline tests on saved pages; a read-only graph viewer in `viewer/` (Next.js, see its README) | Agenda annexes (bilag) are not fetched, only the main agenda PDF; no OCR |
 
 **FirstAgenda**, a commercial agenda system used by several large municipalities, loads its data from
 `/api`, and the `robots.txt` of those sites says `Disallow: /api`. The adapter therefore reports the
