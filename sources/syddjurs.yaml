@@ -1,0 +1,8 @@
+# Syddjurs Kommune: "Aaben Dagsorden", a Java app that loads its data with small AJAX calls.
+# robots.txt allows everything. Needs Python because the listing takes three steps.
+id: syddjurs
+name: Syddjurs Kommune, Byraadet
+python_adapter: sources.syddjurs.SyddjursAdapter
+base_url: https://aabendagsorden.syddjurs.dk
+committee_id: 7        # "Byraadet" in the site's dropdown
+look_ahead_days: 60    # agendas are published before the meeting

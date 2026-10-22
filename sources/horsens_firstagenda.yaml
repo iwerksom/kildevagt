@@ -1,0 +1,7 @@
+# Horsens Kommune's agenda site runs on FirstAgenda. The page is an empty shell that JavaScript
+# fills from /api, and robots.txt on that host says "Disallow: /api". This adapter does NOT
+# call /api: it checks the shell and reports the source as blocked.
+id: horsens
+name: Horsens Kommune (FirstAgenda), blocked
+python_adapter: sources.firstagenda.FirstAgendaAdapter
+base_url: https://dagsordener.horsens.dk
