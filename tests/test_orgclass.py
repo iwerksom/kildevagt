@@ -4,7 +4,8 @@ Two labelled sets, both made by reading names from the real graph:
   org_gold.csv        the first audit; the rules were written while looking at it (optimistic)
   org_gold_fresh.csv  names from meetings fetched afterwards. Rules were first measured on it, THEN
                       generalisable fixes were made, so it is also no longer fully untouched.
-clean_name (optional) = the name once technical municipal words are removed.
+name_cleaning.csv holds strings that are an organisation plus a technical municipal word
+('Glud Museum Samarbejdsaftale') with the name they must be cleaned to; they are not in the labelled sets.
 expected = Company (a business), Organisation (not a business) or Other (anything else, including
 'cannot tell'). What matters is PRECISION: a wrong 'Company' is worse than a name left Unclassified.
 Recall is lower on purpose: a name with no word saying what it is stays Unclassified.
@@ -80,11 +81,12 @@ def test_a_match_across_a_sentence_boundary_keeps_only_the_company():
     assert result.key == "sæsonens madleverandør"
 
 
-@pytest.mark.parametrize("name", list(SETS))
-def test_technical_words_are_removed_from_the_name(name):
-    """'Glud Museum Samarbejdsaftale' is the organisation 'Glud Museum' plus a document type."""
-    checked = [r for r in SETS[name] if r.get("clean_name")]
-    for r in checked:
+def test_technical_words_are_removed_from_the_name():
+    """'Glud Museum Samarbejdsaftale' is the organisation 'Glud Museum' plus a document type.
+    These strings are not in the labelled sets (they are not organisations); they are checked here."""
+    rows = list(csv.DictReader((FIXTURES / "name_cleaning.csv").open(encoding="utf-8")))
+    assert len(rows) >= 8
+    for r in rows:
         assert classify(r["surface"]).name == r["clean_name"], r["surface"]
-    if name == "org_gold_fresh":
-        assert len(checked) >= 8
+    glued = {r["surface"] for rows_ in SETS.values() for r in rows_}
+    assert not glued & {r["surface"] for r in rows}, "glued strings must not be in the labelled sets"

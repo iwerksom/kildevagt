@@ -1,87 +1,85 @@
-surface,expected,clean_name
-BDO,Company,
-Sæsonens Madleverandør ApS,Company,
-Hedensted Spildevand A/S,Company,
-Energnist I/S,Company,
-Renewable Energy Company A/S,Company,
-Obton A/S,Company,
-Eurowind Energy A/S,Company,
-Hedensted Fjernvarme A.m.b.a,Company,
-Copenhagen Infrastructure Partners,Company,
-CIP,Company,
-Domea,Company,
-Billund Lufthavn,Company,
-Altinget,Company,
-Anlægsfonden,Organisation,
-Landsbyggefonden,Organisation,
-Landbyggefonden,Organisation,
-Hedensted Spildevand,Organisation,
-Hedensted Fjernvarme,Organisation,
-Bjerre Kirke,Organisation,
-Pensionisthøjskolen,Organisation,
-Byggeskadefonden,Organisation,
-Bøgballe Friskole,Organisation,
-Nordea-fonden,Organisation,
-Danmarks Naturfredningsforening,Organisation,
-Danmarks Naturfredningsforenings,Organisation,
-Dansk Metal,Organisation,
-Dansk Industri,Organisation,
-Fødevareforbundet NNF,Organisation,
-Gudenåkomitéen,Organisation,
-Teknik,Other,
-Rindbækvej,Other,
-Solmarkerne,Other,
-Treparten,Other,
-Social Omsorg,Other,
-Skjold,Other,
-Frederiksbergparken,Other,
-Erhvervslokalplaner,Other,
-Landbrug,Other,
-Miljømålsloven,Other,
-Miljøvurderingsloven,Other,
-Økonomiaftalen,Other,
-Vindmøllepark,Other,
-Delegationsplanen,Other,
-Erhvervsplan,Other,
-Klima,Other,
-Kontrolenheden,Other,
-KL Topmødet,Other,
-MARS,Other,
-Borgmesterbrev,Other,
-Forårsaftalen,Other,
-Rådyrvej,Other,
-Boestholtvej,Other,
-Ussingvej,Other,
-Bråskovvej,Other,
-Frederikslystvej,Other,
-Fødevarer,Other,
-Akutsygepleje,Other,
-Trafiksikkerhedsplanens,Other,
-Visionsplanen for Stouby,Other,
-Handicapbarometeret,Other,
-Supercykelstisamarbejdet,Other,
-Solenergianlægget,Other,
-Skolen,Other,
-Brancherepræsentant,Other,
-Budgetoverslagsårene,Other,
-Februar-marts,Other,
-Treparter,Other,
-Inddraget,Other,
-Ungeforanstaltning,Other,
-Revionsprotokollat Revisors påtegning,Other,
-Energistyrelsen,Other,
-Økonomiudvalget,Other,
-Kommunalbestyrelsen,Other,
-Seniorrådet,Other,
-KL,Other,
-Vejdirektoratet,Other,
-Ankestyrelsen,Other,
-Sønderby Vandværk Lovgrundlag Bekendtgørelse,Organisation,Sønderby Vandværk
-Hjortsvang Museum Samarbejdsaftale,Organisation,Hjortsvang Museum
-Glud Museum Samarbejdsaftale,Organisation,Glud Museum
-Sagsfremstilling Visit Aarhus,Organisation,Visit Aarhus
-Hornsyld Klimavarme Lovgrundlag Bekendtgørelse,Other,Hornsyld Klimavarme
-Hornsyld Klimavarme vedr,Other,Hornsyld Klimavarme
-Solmarkerne Nyt bilag,Other,Solmarkerne Nyt
-Miljøvurderingsloven Beslutning,Other,Miljøvurderingsloven
-Energnist Dagsorden,Other,Energnist
+surface,expected
+BDO,Company
+Sæsonens Madleverandør ApS,Company
+Hedensted Spildevand A/S,Company
+Energnist I/S,Company
+Renewable Energy Company A/S,Company
+Obton A/S,Company
+Eurowind Energy A/S,Company
+Hedensted Fjernvarme A.m.b.a,Company
+Copenhagen Infrastructure Partners,Company
+CIP,Company
+Domea,Company
+Billund Lufthavn,Company
+Altinget,Company
+Anlægsfonden,Organisation
+Landsbyggefonden,Organisation
+Landbyggefonden,Organisation
+Hedensted Spildevand,Organisation
+Hedensted Fjernvarme,Organisation
+Bjerre Kirke,Organisation
+Pensionisthøjskolen,Organisation
+Byggeskadefonden,Organisation
+Bøgballe Friskole,Organisation
+Nordea-fonden,Organisation
+Danmarks Naturfredningsforening,Organisation
+Danmarks Naturfredningsforenings,Organisation
+Dansk Metal,Organisation
+Dansk Industri,Organisation
+Fødevareforbundet NNF,Organisation
+Gudenåkomitéen,Organisation
+Teknik,Other
+Rindbækvej,Other
+Solmarkerne,Other
+Treparten,Other
+Social Omsorg,Other
+Skjold,Other
+Frederiksbergparken,Other
+Erhvervslokalplaner,Other
+Landbrug,Other
+Miljømålsloven,Other
+Miljøvurderingsloven,Other
+Økonomiaftalen,Other
+Vindmøllepark,Other
+Delegationsplanen,Other
+Erhvervsplan,Other
+Klima,Other
+Kontrolenheden,Other
+KL Topmødet,Other
+MARS,Other
+Borgmesterbrev,Other
+Forårsaftalen,Other
+Rådyrvej,Other
+Boestholtvej,Other
+Ussingvej,Other
+Bråskovvej,Other
+Frederikslystvej,Other
+Fødevarer,Other
+Akutsygepleje,Other
+Trafiksikkerhedsplanens,Other
+Visionsplanen for Stouby,Other
+Handicapbarometeret,Other
+Supercykelstisamarbejdet,Other
+Solenergianlægget,Other
+Skolen,Other
+Brancherepræsentant,Other
+Budgetoverslagsårene,Other
+Februar-marts,Other
+Treparter,Other
+Inddraget,Other
+Ungeforanstaltning,Other
+Revionsprotokollat Revisors påtegning,Other
+Energistyrelsen,Other
+Økonomiudvalget,Other
+Kommunalbestyrelsen,Other
+Seniorrådet,Other
+KL,Other
+Vejdirektoratet,Other
+Ankestyrelsen,Other
+Glud Museum,Organisation
+Hjortsvang Museum,Organisation
+Visit Aarhus,Organisation
+Sønderby Vandværk,Organisation
+Hornsyld Klimavarme,Other
+Solmarkerne Nyt,Other
+Energnist,Other
