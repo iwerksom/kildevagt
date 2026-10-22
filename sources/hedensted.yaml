@@ -1,0 +1,15 @@
+# Hedensted Kommune: server-rendered HTML (Umbraco CMS, SBSYS agendas).
+# Only the Kommunalbestyrelsen (city council) is covered.
+id: hedensted
+name: Hedensted Kommune, Kommunalbestyrelsen
+list_pages:
+  - https://www.hedensted.dk/politik-og-indflydelse/kommunalbestyrelse-og-udvalg/dagsordener-og-referater/kommunalbestyrelsen-dagsordener-og-referater
+item_link: a.list__link
+meeting:
+  title: h1
+  facts: .accordion--sbsys .rich-text
+  agenda_item: .accordion__item
+  agenda_item_title: .accordion-header h2
+  agenda_item_body: .accordion-body
+  # The main agenda PDF only; the many annexes (bilag) are not fetched in this prototype.
+  attachment: .accordion--sbsys__btns-print a.attachment-link

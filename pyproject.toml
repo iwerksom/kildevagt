@@ -1,0 +1,19 @@
+[project]
+name = "kildevagt"
+version = "0.1.0"
+description = "Prototype: one shared scraper core with small adapters per source"
+requires-python = ">=3.10"
+dependencies = ["requests", "beautifulsoup4", "lxml", "pyyaml", "pypdf"]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[project.scripts]
+kildevagt = "kildevagt.cli:main"
+
+[tool.setuptools]
+packages = ["kildevagt"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
