@@ -9,6 +9,9 @@ const CX = W / 2;
 const CY = 305;
 const RING = 215;
 
+// Server and browser compute sin/cos differently in the last digits, which breaks hydration. Round.
+const round = (n: number) => Math.round(n * 100) / 100;
+
 type Props = {
   title: string;
   entities: Entity[];
@@ -25,7 +28,7 @@ export default function GraphView({ title, entities, selected, onSelect, countFo
   const step = (2 * Math.PI) / Math.max(entities.length, 1);
   const placed = entities.map((e, i) => {
     const angle = -Math.PI / 2 + i * step;
-    return { e, angle, x: CX + RING * Math.cos(angle), y: CY + RING * Math.sin(angle) };
+    return { e, angle, x: round(CX + RING * Math.cos(angle)), y: round(CY + RING * Math.sin(angle)) };
   });
 
   // Other documents: one node each, placed outside the ring near the entities that link to them.
@@ -39,7 +42,7 @@ export default function GraphView({ title, entities, selected, onSelect, countFo
     }
   }
   const otherNodes = [...others.entries()].map(([url, o], i, all) => ({
-    url, ...o, x: (W / (all.length + 1)) * (i + 1), y: H - 30,
+    url, ...o, x: round((W / (all.length + 1)) * (i + 1)), y: H - 30,
   }));
 
   return (
