@@ -67,6 +67,7 @@ def build_graph(archive, sources_dir: Path, root: Path) -> dict:
     kinds = defaultdict(int)
     surface_forms = defaultdict(set)                   # company key -> spellings seen
     weak = []                                          # low-confidence guesses, for the log
+    pending = []                                       # (fetch row, agenda item number, mention), written after resolving
     with drivers.session() as session:
         session.run("MATCH (n) DETACH DELETE n")
         for doc, row in docs:
@@ -96,20 +97,23 @@ def build_graph(archive, sources_dir: Path, root: Path) -> dict:
                 mentions, stats = extract(nlp, f"{item.title}. {item.text}", members)
                 for k in ("private_persons_dropped", "public_bodies_skipped", "noise_skipped"):
                     totals[k] += stats[k]
-                for mention in mentions:
-                    _write_mention(session, row, item.number, mention)
-                    totals["mentions"] += 1
-                    kinds[mention.kind] += 1
-                    if mention.kind in ("Company", "Organisation"):
-                        surface_forms[mention.key].add(mention.name)
-                    if mention.kind == "Organisation":
-                        weak.append(mention)
+                pending += [(row, item.number, m) for m in mentions]
             _write_members(session, doc, row)
+        resolved = _resolve_by_legal_form([m for _, _, m in pending])
+        for row, item_number, mention in pending:
+            _write_mention(session, row, item_number, mention)
+            totals["mentions"] += 1
+            kinds[mention.kind] += 1
+            if mention.kind in ("Company", "Organisation", "Unclassified"):
+                surface_forms[mention.key].add(mention.name)
+            if mention.kind == "Unclassified":
+                weak.append(mention)
         session.run("CREATE CONSTRAINT IF NOT EXISTS FOR (c:Company) REQUIRE c.key IS UNIQUE")
     drivers.close()
     log_path = archive.root / "entity_log.jsonl"
     totals.update({f"mentions_{k.lower()}": v for k, v in sorted(kinds.items())})
-    totals["entity_log_cases"] = _write_entity_log(log_path, surface_forms, weak)
+    totals["resolved_by_legal_form"] = len(resolved)
+    totals["entity_log_cases"] = _write_entity_log(log_path, surface_forms, weak, resolved)
     return totals
 
 
@@ -120,7 +124,7 @@ def _write_mention(session, row, item_number, mention: Mention):
     if mention.kind == "Company":
         node = "MERGE (e:Company {key:$key}) ON CREATE SET e.name=$name, e.verified=false, e.cvr=null " \
                "SET e.legal_form=coalesce($form, e.legal_form)"
-    elif mention.kind in ("Place", "Organisation"):
+    elif mention.kind in ("Place", "Organisation", "Unclassified"):
         node = f"MERGE (e:{mention.kind} {{key:$key}}) ON CREATE SET e.name=$name, e.verified=false"
     else:
         node = "MERGE (e:Person {key:$pkey}) ON CREATE SET e.name=$name, e.party=$party, e.role='elected'"
@@ -145,17 +149,32 @@ def _write_members(session, doc, row):
                 props=props)
 
 
-def _write_entity_log(path: Path, surface_forms, weak) -> int:
+def _resolve_by_legal_form(mentions: list[Mention]) -> dict[str, set[str]]:
+    """'Hedensted Spildevand' and 'Hedensted Spildevand A/S' are one name. If any mention of a name
+    carries a legal form, every mention of the same normalised name becomes a Company."""
+    with_form = {m.key: m.legal_form for m in mentions if m.kind == "Company" and m.legal_form}
+    resolved: dict[str, set[str]] = defaultdict(set)
+    for m in mentions:
+        if m.key in with_form and m.kind in ("Organisation", "Unclassified"):
+            resolved[m.key].add(m.name)
+            m.kind, m.legal_form, m.method = "Company", with_form[m.key], m.method + " (name has a legal form elsewhere)"
+            m.confidence = max(m.confidence, 0.7)
+    return resolved
+
+
+def _write_entity_log(path: Path, surface_forms, weak, resolved=None) -> int:
     """Hard cases for entity resolution: one company under several spellings, and weak guesses."""
     cases = []
     for key, forms in sorted(surface_forms.items()):
         if len(forms) > 1:
             cases.append({"case": "merged_spellings", "key": key, "spellings": sorted(forms)})
+    for key, names in sorted((resolved or {}).items()):
+        cases.append({"case": "bare_name_merged_into_company_with_legal_form", "key": key, "names": sorted(names)})
     counts = defaultdict(int)
     for mention in weak:
         counts[mention.name] += 1
     for name, n in sorted(counts.items(), key=lambda x: -x[1]):
-        cases.append({"case": "organisation_without_legal_form_not_a_company", "name": name,
+        cases.append({"case": "unclassified_no_evidence_for_any_kind", "name": name,
                       "mentions": n})
     path.write_text("\n".join(json.dumps(c, ensure_ascii=False) for c in cases), encoding="utf-8")
     return len(cases)

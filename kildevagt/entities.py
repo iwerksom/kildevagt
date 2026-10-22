@@ -9,31 +9,18 @@ from dataclasses import dataclass
 
 from .extract import normalise_space
 
-LEGAL_FORMS = {  # lower-case spelling -> canonical
-    "a/s": "A/S", "aps": "ApS", "i/s": "I/S", "k/s": "K/S", "p/s": "P/S", "ivs": "IVS",
-    "amba": "A.m.b.a.", "a.m.b.a.": "A.m.b.a.", "a.m.b.a": "A.m.b.a.",
-    "fmba": "F.m.b.a.", "f.m.b.a.": "F.m.b.a.", "f.m.b.a": "F.m.b.a.",
-}
-_FORM = r"(?:A/S|ApS|I/S|K/S|P/S|IVS|A\.m\.b\.a\.?|amba|F\.m\.b\.a\.?|fmba)"
-LEGAL_FORM_AT_END = re.compile(rf"\s+({_FORM})\s*$", re.IGNORECASE)
+from .orgclass import _FORM, LEGAL_FORM_AT_END, LEGAL_FORMS, PUBLIC_BODY, classify
+
 COMPANY_WITH_FORM = re.compile(
     rf"((?:[A-ZÆØÅ][^\s,;:()\"]*\s+){{0,5}}[A-ZÆØÅ][^\s,;:()\"]*)\s+({_FORM})(?![\wæøå])")
-PUBLIC_BODY = re.compile(
-    r"kommune|region|byråd|kommunalbestyrelse|udvalg|forvaltning|styrelse|ministeri|politi|"
-    r"folketing|regering|landsforening|statens|danmarks statistik|domstol|beredskab|råd$|rådet$|nævn|"
-    r"direktorat|tilsyn|administration|afdeling|^kls?$|^kl\b",
-    re.IGNORECASE)
-PARTIES = {"venstre", "socialdemokratiet", "dansk folkeparti", "liberal alliance", "enhedslisten",
-           "sf", "socialistisk folkeparti", "konservative", "det konservative folkeparti",
-           "radikale venstre", "alternativet", "nye borgerlige", "danmarksdemokraterne",
-           "moderaterne", "borgernes parti", "frie grønne", "kristendemokraterne"}
 FILE_NAME = re.compile(r"\.(pdf|docx?|xlsx?|pptx?)\b", re.IGNORECASE)
-GENERIC = {"teknik", "natur", "miljø", "social", "kultur", "erhverv", "børn", "sundhed", "ældre", "biler"}
+CONFIDENCE = {"legal form": 0.95, "known business": 0.9, "known organisation": 0.9,
+              "business word": 0.7}   # anything else with a kind: 0.7 (a word like 'forening'); Unclassified: 0.3
 
 
 @dataclass
 class Mention:
-    kind: str            # Company | Place | Person
+    kind: str            # Company | Organisation | Unclassified | Place | Person
     name: str            # as written (display)
     key: str             # normalised, used to merge
     method: str          # how it was found
@@ -107,18 +94,21 @@ def extract(nlp, text: str, members: dict[str, str]) -> tuple[list[Mention], dic
             candidates[span] = (m.group(0), "legal_form_regex")
 
     for (start, end), (surface, method) in sorted(candidates.items()):
-        key, form = normalise_company(surface)
-        if len(key) < 3 or re.fullmatch(r"[\d\s]+", key) or surface.rstrip().endswith("-") or key in GENERIC \
-                or key in PARTIES or FILE_NAME.search(surface) or re.search(r"\d", key) and form is None:
+        if FILE_NAME.search(surface):
             stats["noise_skipped"] += 1
             continue
-        if PUBLIC_BODY.search(key):
-            stats["public_bodies_skipped"] += 1
+        result = classify(surface)
+        if result.label == "Skip":
+            stats["public_bodies_skipped" if "public" in result.reason or "committee" in result.reason
+                  or "party" in result.reason else "noise_skipped"] += 1
             continue
-        confidence = 0.95 if (form and method == "spacy_org") else 0.9 if form else 0.5
-        mentions.append(Mention("Company" if form else "Organisation", normalise_space(surface), key,
-                                method if not form or method != "spacy_org" else "spacy_org+legal_form",
-                                confidence, _snippet(text, start, end, person_spans), form))
+        confidence = 0.3 if result.label == "Unclassified" else CONFIDENCE.get(result.reason, 0.7)
+        if result.legal_form and method == "spacy_org":
+            confidence = 0.95
+        elif result.legal_form:
+            confidence = 0.9
+        mentions.append(Mention(result.label, result.name, result.key, f"{method}: {result.reason}",
+                                confidence, _snippet(text, start, end, person_spans), result.legal_form))
 
     for ent in doc.ents:
         if ent.label_ == "LOC" and len(ent.text) >= 3 and not PUBLIC_BODY.search(ent.text):
