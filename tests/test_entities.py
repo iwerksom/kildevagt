@@ -48,3 +48,9 @@ def test_file_names_and_parties_are_noise(nlp):
     mentions, stats = extract(nlp, text, {})
     assert not [m for m in mentions if m.kind in ("Company", "Organisation") and
                 ("pdf" in m.key or m.key in ("venstre", "socialdemokratiet"))]
+
+
+def test_file_name_pattern_matches_the_surface_form_not_the_stripped_key():
+    from kildevagt.entities import FILE_NAME
+    assert FILE_NAME.search("Reno Djurs.pdf")
+    assert not FILE_NAME.search("Reno Djurs I/S")

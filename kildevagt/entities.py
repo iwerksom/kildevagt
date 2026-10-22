@@ -27,6 +27,7 @@ PARTIES = {"venstre", "socialdemokratiet", "dansk folkeparti", "liberal alliance
            "sf", "socialistisk folkeparti", "konservative", "det konservative folkeparti",
            "radikale venstre", "alternativet", "nye borgerlige", "danmarksdemokraterne",
            "moderaterne", "borgernes parti", "frie grønne", "kristendemokraterne"}
+FILE_NAME = re.compile(r"\.(pdf|docx?|xlsx?|pptx?)\b", re.IGNORECASE)
 GENERIC = {"teknik", "natur", "miljø", "social", "kultur", "erhverv", "børn", "sundhed", "ældre", "biler"}
 
 
@@ -108,7 +109,7 @@ def extract(nlp, text: str, members: dict[str, str]) -> tuple[list[Mention], dic
     for (start, end), (surface, method) in sorted(candidates.items()):
         key, form = normalise_company(surface)
         if len(key) < 3 or re.fullmatch(r"[\d\s]+", key) or surface.rstrip().endswith("-") or key in GENERIC \
-                or key in PARTIES or re.search(r"\.(pdf|docx?|xlsx?|pptx?)$", key) or re.search(r"\d", key) and form is None:
+                or key in PARTIES or FILE_NAME.search(surface) or re.search(r"\d", key) and form is None:
             stats["noise_skipped"] += 1
             continue
         if PUBLIC_BODY.search(key):
