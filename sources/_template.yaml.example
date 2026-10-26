@@ -1,0 +1,16 @@
+# Template for a new simple HTML source. Copy to sources/<name>.yaml and fill in.
+# Selectors are CSS selectors; test them in the browser console with document.querySelectorAll(...).
+id: myplace                 # short, lower case, used as the folder name in the archive
+name: My Place Kommune, Byraadet
+list_pages:                 # pages that list the meetings (add more for pagination or committees)
+  - https://www.example.dk/politik/dagsordener
+item_link: a.meeting-link   # one <a> per meeting; its text must contain the date, e.g. "8. oktober 2026"
+meeting:                    # selectors on a single meeting page
+  title: h1
+  facts: .meeting-facts     # element with the date ("Mødedato: 8. oktober 2026")
+  agenda_item: .agenda-item
+  agenda_item_title: h2     # text like "12. Budget 2027"
+  agenda_item_body: .agenda-item-body
+  attachment: a.pdf-link    # the main agenda PDF (annexes are not fetched)
+# If the site needs logic (AJAX, several steps), add instead:
+# python_adapter: sources.myplace.MyPlaceAdapter   (see sources/syddjurs.py)
